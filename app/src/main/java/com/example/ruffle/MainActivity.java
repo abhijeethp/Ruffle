@@ -13,6 +13,9 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.os.VibratorManager;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -22,8 +25,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 class Reading {
     final Float ax, ay, az;
@@ -46,8 +52,8 @@ class Reading {
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final String TAG = "PLS_HALP";
-    private static final long EXPORT_SIZE = 256 * 1024; // TODO - set to 128K finally
-    private static final long READING_SIZE = 4 * 3;
+    private static final long EXPORT_SIZE = 128 * 1024; // TODO - set to 128K finally
+    private static final long READING_SIZE = 8 * 3;
     private static final long NUM_READINGS = EXPORT_SIZE / READING_SIZE;
 
     private boolean exported = false;
@@ -87,6 +93,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         sensorManager.registerListener(MainActivity.this, sensor_accel, SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(MainActivity.this, sensor_linearAccel, SENSOR_DELAY_FASTEST);
+
+        int millis = 2*1000;
+        Map<Character, VibrationEffect> amplitudes = new HashMap<>();
+        amplitudes.put('a', VibrationEffect.createOneShot(millis, 25));
+        amplitudes.put('b', VibrationEffect.createOneShot(millis, 50));
+        amplitudes.put('c', VibrationEffect.createOneShot(millis, 75));
+        amplitudes.put('d', VibrationEffect.createOneShot(millis, 100));
+        amplitudes.put('e', VibrationEffect.createOneShot(millis, 125));
+
+        VibratorManager vibratorManager = (VibratorManager) getSystemService(VIBRATOR_MANAGER_SERVICE);
+        Vibrator vibrator = vibratorManager.getDefaultVibrator();
+        vibrator.vibrate(amplitudes.get('a'));
     }
 
     @Override
