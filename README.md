@@ -9,3 +9,4 @@
  - Open in Android Studio to read accel readings
  - Once exported (to phone downloads) copy export to computer
  - Use viz.m in matlab and replace filepaths for analysis
+ - test
